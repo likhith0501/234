@@ -2,7 +2,7 @@ services:
   - type: web
     name: hepatox
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && python train_models.py
     startCommand: gunicorn app:app --workers 2 --timeout 120
     envVars:
       - key: PYTHON_VERSION

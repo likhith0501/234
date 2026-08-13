@@ -557,11 +557,18 @@ def create_app_folders():
     ]
     
     for folder in folders:
-        os.makedirs(folder, exist_ok=True)
+        try:
+            os.makedirs(folder, exist_ok=True)
+        except OSError:
+            pass
 
-# Ensure folders exist when application starts
+# Ensure folders and database exist when application starts
 with app.app_context():
     create_app_folders()
+    try:
+        setup_db()
+    except Exception as e:
+        print(f"[Note] setup_db check on startup: {e}")
 
 
 # ============================================================================

@@ -20,9 +20,14 @@ class Config:
     if _db_url and _db_url.startswith("postgres://"):
         _db_url = _db_url.replace("postgres://", "postgresql://", 1)
     
-    SQLALCHEMY_DATABASE_URI = (
-        _db_url or f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'hepatox.db')}"
-    )
+    IS_VERCEL = os.environ.get("VERCEL") == "1" or "VERCEL" in os.environ
+
+    if IS_VERCEL and not _db_url:
+        SQLALCHEMY_DATABASE_URI = "sqlite:////tmp/hepatox.db"
+    else:
+        SQLALCHEMY_DATABASE_URI = (
+            _db_url or f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'hepatox.db')}"
+        )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
@@ -33,11 +38,18 @@ class Config:
     WTF_CSRF_TIME_LIMIT = None
 
     # ---- File storage ----
-    UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
-    REPORTS_FOLDER = os.path.join(BASE_DIR, "reports")
-    DATASET_FOLDER = os.path.join(BASE_DIR, "dataset")
-    TRAINED_MODELS_FOLDER = os.path.join(BASE_DIR, "trained_models")
-    XAI_PLOTS_FOLDER = os.path.join(BASE_DIR, "static", "xai_plots")
+    if IS_VERCEL:
+        UPLOAD_FOLDER = "/tmp/uploads"
+        REPORTS_FOLDER = "/tmp/reports"
+        DATASET_FOLDER = os.path.join(BASE_DIR, "dataset")
+        TRAINED_MODELS_FOLDER = os.path.join(BASE_DIR, "trained_models")
+        XAI_PLOTS_FOLDER = "/tmp/xai_plots"
+    else:
+        UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+        REPORTS_FOLDER = os.path.join(BASE_DIR, "reports")
+        DATASET_FOLDER = os.path.join(BASE_DIR, "dataset")
+        TRAINED_MODELS_FOLDER = os.path.join(BASE_DIR, "trained_models")
+        XAI_PLOTS_FOLDER = os.path.join(BASE_DIR, "static", "xai_plots")
 
     # ---- Admin bootstrap credentials (used only if no admin exists yet) ----
     DEFAULT_ADMIN_USERNAME = os.environ.get("DEFAULT_ADMIN_USERNAME", "admin")

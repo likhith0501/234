@@ -57,6 +57,9 @@ class SHAPExplainer:
         if isinstance(shap_values, list):
             # For binary classification, use positive class
             shap_values = shap_values[1] if len(shap_values) > 1 else shap_values[0]
+        elif hasattr(shap_values, 'shape') and len(shap_values.shape) == 3:
+            # Shape is (n_samples, n_features, n_classes)
+            shap_values = shap_values[:, :, 1] if shap_values.shape[2] > 1 else shap_values[:, :, 0]
         
         if len(shap_values.shape) > 1:
             shap_values = shap_values[patient_index]

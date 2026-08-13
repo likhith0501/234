@@ -36,36 +36,42 @@ class DataPreprocessor:
         self.label_encoders = {}
         self.feature_importance = {}
     
-    def preprocess(self, df):
+    def preprocess(self, df, is_training=False):
         """
         Preprocess dataset: handle missing values, encode, scale.
         
         Args:
             df (pd.DataFrame): Input dataframe
+            is_training (bool): Whether preprocessing is for training
             
         Returns:
             tuple: (X, y) preprocessed features and target
         """
         # Remove duplicates
-        df = df.drop_duplicates()
+        if is_training:
+            df = df.drop_duplicates()
         
         # Handle missing values
-        df = self._handle_missing_values(df)
+        df = self._handle_missing_values(df, is_training)
         
         # Encode categorical variables
-        df = self._encode_categorical(df)
+        df = self._encode_categorical(df, is_training)
         
         # Extract features and target
         X = df[self.feature_columns].copy()
         y = df[self.target_column].copy() if self.target_column in df.columns else None
         
         # Scale features
-        X_scaled = self.scaler.fit_transform(X)
+        if is_training:
+            X_scaled = self.scaler.fit_transform(X)
+        else:
+            X_scaled = self.scaler.transform(X)
+            
         X = pd.DataFrame(X_scaled, columns=self.feature_columns)
         
         return X, y
     
-    def _handle_missing_values(self, df):
+    def _handle_missing_values(self, df, is_training=False):
         """Handle missing values in dataframe."""
         # Fill numeric columns with median
         numeric_cols = df.select_dtypes(include=[np.number]).columns
@@ -78,12 +84,12 @@ class DataPreprocessor:
         
         return df
     
-    def _encode_categorical(self, df):
+    def _encode_categorical(self, df, is_training=False):
         """Encode categorical variables."""
         categorical_cols = df.select_dtypes(include=['object']).columns
         
         for col in categorical_cols:
-            if col not in self.label_encoders:
+            if is_training or col not in self.label_encoders:
                 self.label_encoders[col] = LabelEncoder()
                 df[col] = self.label_encoders[col].fit_transform(df[col].astype(str))
             else:

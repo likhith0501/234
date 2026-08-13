@@ -42,7 +42,7 @@ def train_all_models():
         target_column=Config.TARGET_COLUMN
     )
     
-    X, y = preprocessor.preprocess(dataset)
+    X, y = preprocessor.preprocess(dataset, is_training=True)
     
     print(f"[OK] Data preprocessed:")
     print(f"  - Features shape: {X.shape}")

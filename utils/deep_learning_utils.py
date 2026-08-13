@@ -9,13 +9,19 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers, Sequential, models
-from tensorflow.keras.optimizers import Adam, RMSprop
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
-from tensorflow.keras.layers import Dense, Dropout, BatchNormalization, Input
-from tensorflow.keras.regularizers import l2
+try:
+    import tensorflow as tf
+    from tensorflow import keras
+    from tensorflow.keras import layers, Sequential, models
+    from tensorflow.keras.optimizers import Adam, RMSprop
+    from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
+    from tensorflow.keras.layers import Dense, Dropout, BatchNormalization, Input
+    from tensorflow.keras.regularizers import l2
+    HAS_TENSORFLOW = True
+except ImportError:
+    tf = None
+    keras = None
+    HAS_TENSORFLOW = False
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - HepatoX{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold">
+                <i class="fas fa-cog"></i> Admin Dashboard
+            </h1>
+            <p class="text-muted">System administration and management</p>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-primary">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h6 class="text-muted mb-1">Total Users</h6>
+                    <h2 class="mb-0">{{ stats.users_count }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-info">
+                    <i class="fas fa-hospital-user"></i>
+                </div>
+                <div class="stat-content">
+                    <h6 class="text-muted mb-1">Total Patients</h6>
+                    <h2 class="mb-0">{{ stats.patients_count }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-success">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <h6 class="text-muted mb-1">Total Predictions</h6>
+                    <h2 class="mb-0">{{ stats.predictions_count }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-warning">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="stat-content">
+                    <h6 class="text-muted mb-1">Trained Models</h6>
+                    <h2 class="mb-0">{{ stats.models_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Actions -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users-cog"></i> User Management
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Manage user accounts, roles, and permissions</p>
+                    <a href="{{ url_for('admin_users') }}" class="btn btn-primary">
+                        <i class="fas fa-users"></i> Manage Users
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-brain"></i> Model Management
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">View and manage trained machine learning models</p>
+                    <a href="{{ url_for('admin_models') }}" class="btn btn-primary">
+                        <i class="fas fa-microchip"></i> Manage Models
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-heartbeat"></i> System Status
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <h6>Database</h6>
+                            <span class="badge bg-success fs-6">
+                                <i class="fas fa-check-circle"></i> Connected
+                            </span>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h6>Models</h6>
+                            <span class="badge bg-success fs-6">
+                                <i class="fas fa-check-circle"></i> Ready
+                            </span>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h6>API</h6>
+                            <span class="badge bg-success fs-6">
+                                <i class="fas fa-check-circle"></i> Operational
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

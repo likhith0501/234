@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.env
+venv/
+env/
+instance/*.db
+trained_models/*.joblib
+trained_models/*.pkl
+*.log
+.vscode/
+.DS_Store
+uploads/*
+reports/*.pdf
+reports/*.xlsx
+!uploads/.gitkeep
+!reports/.gitkeep

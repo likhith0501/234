@@ -1,0 +1,709 @@
+/* ============================================================================
+   HepatoX - Main Stylesheet
+   ============================================================================ */
+
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --success-color: #30cfd0;
+    --danger-color: #fa709a;
+    --warning-color: #fee140;
+    --info-color: #f093fb;
+    --light-color: #f8f9fa;
+    --dark-color: #2d3436;
+    --border-radius: 10px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #2d3436;
+    line-height: 1.6;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 1rem;
+}
+
+/* Buttons */
+.btn {
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success-color) 0%, #11998e 100%);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #f5576c 100%);
+}
+
+.btn-info {
+    background-color: #17a2b8;
+}
+
+/* Forms */
+.form-control, .form-select {
+    border: 1px solid #dfe6e9;
+    border-radius: var(--border-radius);
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-control::placeholder {
+    color: #b2bec3;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+}
+
+/* Tables */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: #495057;
+}
+
+.table tbody tr {
+    transition: var(--transition);
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+/* Badges */
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+    border-radius: 20px;
+}
+
+.badge.bg-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, var(--success-color) 0%, #11998e 100%) !important;
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #f5576c 100%) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, var(--warning-color) 0%, #ffa502 100%) !important;
+}
+
+.badge.bg-info {
+    background: linear-gradient(135deg, var(--info-color) 0%, #f5576c 100%) !important;
+}
+
+/* Alerts */
+.alert {
+    border: none;
+    border-radius: var(--border-radius);
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left-color: #28a745;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left-color: #dc3545;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left-color: #ffc107;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-left-color: #17a2b8;
+}
+
+/* Progress Bars */
+.progress {
+    background-color: #e9ecef;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: var(--box-shadow);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.navbar-brand i {
+    margin-right: 0.5rem;
+    color: var(--primary-color);
+}
+
+.navbar-nav .nav-link {
+    margin: 0 0.5rem;
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Main Content */
+.main-content {
+    min-height: calc(100vh - 200px);
+    padding: 2rem 0;
+}
+
+/* Statistics */
+.stat-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.stat-content h2 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+/* Gradients */
+.bg-gradient-blue {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-green {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.bg-gradient-orange {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Loading Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
+    
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .stat-content {
+        width: 100%;
+    }
+    
+    .main-content {
+        padding: 1rem 0;
+    }
+    
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Accessibility */
+:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+button:focus, a:focus {
+    outline: 2px solid var(--primary-color);
+}
+
+/* Utility Classes */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ============================================================================
+   ANIMATED LIVER VISUALS & HIGH-TECH FX SYSTEM
+   ============================================================================ */
+
+/* Keyframes */
+@keyframes floatHero {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes laserScan {
+    0% { top: 0%; opacity: 0.8; }
+    50% { top: 96%; opacity: 1; }
+    100% { top: 0%; opacity: 0.8; }
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 10px rgba(48, 207, 208, 0.4), inset 0 0 10px rgba(48, 207, 208, 0.2); }
+    50% { box-shadow: 0 0 25px rgba(48, 207, 208, 0.8), inset 0 0 15px rgba(48, 207, 208, 0.5); }
+    100% { box-shadow: 0 0 10px rgba(48, 207, 208, 0.4), inset 0 0 10px rgba(48, 207, 208, 0.2); }
+}
+
+@keyframes radarSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes particleFloat {
+    0% { transform: translateY(0) scale(1); opacity: 0.8; }
+    50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+    100% { transform: translateY(0) scale(1); opacity: 0.8; }
+}
+
+@keyframes shimmerSweep {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes dangerPulse {
+    0% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(250, 112, 154, 0.6)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 18px rgba(250, 112, 154, 0.9)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(250, 112, 154, 0.6)); }
+}
+
+/* Navbar Animated Brand Logo */
+.brand-logo-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.brand-logo-img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #30cfd0;
+    box-shadow: 0 0 10px rgba(48, 207, 208, 0.6);
+    transition: transform 0.4s ease;
+}
+
+.brand-logo-container:hover .brand-logo-img {
+    transform: rotate(180deg) scale(1.1);
+}
+
+.brand-logo-aura {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px dashed rgba(48, 207, 208, 0.7);
+    animation: radarSpin 12s linear infinite;
+}
+
+/* Hero Scanner Image Container */
+.liver-scanner-box {
+    position: relative;
+    display: inline-block;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 0 30px rgba(48, 207, 208, 0.3);
+    animation: floatHero 6s ease-in-out infinite;
+    border: 2px solid rgba(48, 207, 208, 0.4);
+    background: #0b132b;
+}
+
+.liver-scanner-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 18px;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.liver-scanner-box:hover .liver-scanner-img {
+    transform: scale(1.04);
+}
+
+/* Cyber Laser Bar */
+.scanner-laser {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #30cfd0, #00ffcc, #30cfd0, transparent);
+    box-shadow: 0 0 15px #00ffcc, 0 0 25px #30cfd0, 0 0 35px #00ffcc;
+    animation: laserScan 3.5s ease-in-out infinite;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.scanner-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(11, 19, 43, 0.6) 90%),
+                linear-gradient(rgba(48, 207, 208, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(48, 207, 208, 0.07) 1px, transparent 1px);
+    background-size: 100% 100%, 30px 30px, 30px 30px;
+    pointer-events: none;
+    z-index: 4;
+}
+
+/* Floating Telemetry Callout Badges */
+.telemetry-badge {
+    position: absolute;
+    padding: 8px 14px;
+    background: rgba(11, 19, 43, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(48, 207, 208, 0.5);
+    border-radius: 12px;
+    color: #00ffcc;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    z-index: 6;
+    animation: particleFloat 4s ease-in-out infinite;
+}
+
+.telemetry-badge.pos-top-left {
+    top: 20px;
+    left: 20px;
+    animation-delay: 0s;
+}
+
+.telemetry-badge.pos-bottom-right {
+    bottom: 25px;
+    right: 20px;
+    animation-delay: 2s;
+}
+
+.telemetry-badge.pos-top-right {
+    top: 25px;
+    right: 20px;
+    animation-delay: 1s;
+}
+
+/* Animated Glass Cards */
+.glass-card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+}
+
+/* Animated Scanner Banner in Dashboard */
+.dashboard-liver-banner {
+    position: relative;
+    background: linear-gradient(135deg, #0b132b 0%, #1c2541 60%, #3a506b 100%);
+    border-radius: 20px;
+    padding: 2.5rem;
+    color: white;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(48, 207, 208, 0.3);
+}
+
+.dashboard-liver-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(48, 207, 208, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+    animation: pulseGlow 5s infinite;
+}
+
+/* Animated Scanner Loader */
+.ai-scan-animation-box {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    position: relative;
+}
+
+.ai-scan-circle {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 1.5rem auto;
+}
+
+.ai-scan-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #30cfd0;
+    border-right-color: #667eea;
+    animation: radarSpin 1.2s linear infinite;
+}
+
+.ai-scan-ring-inner {
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    border: 2px dashed #00ffcc;
+    animation: radarSpin 2.5s linear infinite reverse;
+}
+
+.ai-scan-center-img {
+    position: absolute;
+    inset: 22px;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 20px rgba(48, 207, 208, 0.8);
+    animation: dangerPulse 2s ease-in-out infinite;
+}
+
+/* Risk Pulsing Badges */
+.risk-pulse-high {
+    animation: dangerPulse 1.5s infinite;
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
+}
+
+.risk-pulse-low {
+    background: linear-gradient(135deg, #30cfd0 0%, #330867 100%) !important;
+}
+
+/* Shimmer Progress */
+.progress-bar-shimmer {
+    background-size: 200% 100%;
+    background-image: linear-gradient(90deg, #667eea 0%, #30cfd0 50%, #667eea 100%);
+    animation: shimmerSweep 3s infinite linear;
+}
+
+/* ============================================================================
+   ANIMATED DELETE UI & MICRO-INTERACTION STYLES
+   ============================================================================ */
+
+@keyframes binShake {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    50% { transform: rotate(10deg); }
+    75% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes rowSlideOut {
+    0% { transform: translateX(0); opacity: 1; height: 55px; }
+    50% { transform: translateX(50px); opacity: 0.4; }
+    100% { transform: translateX(100%); opacity: 0; height: 0; padding: 0; }
+}
+
+@keyframes dangerPulseRing {
+    0% { box-shadow: 0 0 0 0 rgba(250, 112, 154, 0.7); }
+    70% { box-shadow: 0 0 0 20px rgba(250, 112, 154, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(250, 112, 154, 0); }
+}
+
+/* Delete Button styling */
+.btn-delete-animated {
+    background: linear-gradient(135deg, #fa709a 0%, #f5576c 100%);
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 10px rgba(250, 112, 154, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-delete-animated:hover {
+    background: linear-gradient(135deg, #f5576c 0%, #fa709a 100%);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 8px 18px rgba(250, 112, 154, 0.5);
+}
+
+.btn-delete-animated:hover i {
+    animation: binShake 0.5s ease-in-out;
+}
+
+.btn-delete-outline {
+    border: 1.5px solid #fa709a;
+    color: #fa709a !important;
+    background: transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-delete-outline:hover {
+    background: linear-gradient(135deg, #fa709a 0%, #f5576c 100%);
+    color: white !important;
+    box-shadow: 0 6px 15px rgba(250, 112, 154, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-delete-outline:hover i {
+    animation: binShake 0.4s ease-in-out;
+}
+
+/* Animated Modal Warning Icon */
+.delete-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(250, 112, 154, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem auto;
+    color: #f5576c;
+    font-size: 2.2rem;
+    animation: dangerPulseRing 2s infinite;
+}
+
+.row-deleting {
+    animation: rowSlideOut 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards !important;
+}
+
+

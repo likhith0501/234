@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{% block title %}Predict - HepatoX{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold">
+                <i class="fas fa-stethoscope"></i> Make Prediction
+            </h1>
+            <p class="text-muted">Select a patient and generate a liver disease prediction</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Patient Selection -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users"></i> Select Patient
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="patientSelect" class="form-label">Patient *</label>
+                        <select class="form-select form-select-lg" id="patientSelect" required>
+                            <option value="">-- Select a patient --</option>
+                            {% for patient in patients %}
+                            <option value="{{ patient.id }}">
+                                {{ patient.name }} (Age: {{ patient.age }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modelSelect" class="form-label">
+                            <i class="fas fa-brain text-primary me-1"></i> AI Model Architecture
+                        </label>
+                        <select class="form-select form-select-lg" id="modelSelect">
+                            <option value="">-- Best Model (Auto) --</option>
+                            {% if models %}
+                                {% for m in models %}
+                                <option value="{{ m.model_name }}">
+                                    {{ m.model_name }} (ROC-AUC: {{ "%.4f"|format(m.roc_auc) if m.roc_auc else 'N/A' }}) {% if m.is_best %}★ Best{% endif %}
+                                </option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="Logistic Regression">Logistic Regression</option>
+                                <option value="Random Forest">Random Forest</option>
+                                <option value="XGBoost">XGBoost</option>
+                                <option value="AdaBoost">AdaBoost</option>
+                                <option value="SVM">SVM</option>
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary w-100 btn-lg shadow-sm" id="predictBtn" disabled>
+                        <i class="fas fa-microchip me-1"></i> Generate Prediction
+                    </button>
+
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" id="explainCheck" checked>
+                        <label class="form-check-label fw-bold text-secondary" for="explainCheck">
+                            Include XAI Explanations (SHAP & LIME)
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prediction Results -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm" id="resultCard" style="display:none;">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line text-success me-2"></i> Diagnostic Prediction Results
+                    </h5>
+                    <span class="badge bg-success" id="resultBadge">SCAN COMPLETE</span>
+                </div>
+                <div class="card-body">
+                    <!-- Prediction Status -->
+                    <div id="predictionResult"></div>
+
+                    <!-- Risk Metrics -->
+                    <div class="row g-3 mt-3" id="metricsContainer"></div>
+
+                    <!-- Report Download Action Box -->
+                    <div class="p-3 mt-4 rounded border bg-light d-flex justify-content-between align-items-center flex-wrap gap-2" id="reportDownloadBox">
+                        <div>
+                            <h6 class="mb-1 fw-bold text-dark"><i class="fas fa-file-pdf text-danger me-2"></i> Patient Diagnostic Report Ready</h6>
+                            <small class="text-muted">Download complete clinical diagnostic report with lab metrics and risk scores.</small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="#" id="downloadPdfBtn" class="btn btn-danger btn-lg shadow-sm">
+                                <i class="fas fa-download me-1"></i> Download Report (PDF)
+                            </a>
+                            <a href="#" id="downloadCsvBtn" class="btn btn-outline-success btn-lg shadow-sm">
+                                <i class="fas fa-file-csv me-1"></i> Export Data (CSV)
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Explanations -->
+                    <div id="explanationsContainer" style="display:none;">
+                        <hr class="my-4">
+                        <h5 class="fw-bold">
+                            <i class="fas fa-microscope text-primary me-2"></i> Explainable AI (XAI) Feature Contributions
+                        </h5>
+                        <ul class="nav nav-tabs mt-3" id="xaiTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="shap-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#shap" type="button" role="tab">
+                                    <i class="fas fa-chart-bar"></i> SHAP Analysis
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="lime-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#lime" type="button" role="tab">
+                                    <i class="fas fa-puzzle-piece"></i> LIME Explanation
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content mt-3" id="xaiContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- High-Tech Animated Scanner Loader -->
+            <div class="ai-scan-animation-box" id="loadingSpinner" style="display:none;">
+                <div class="ai-scan-circle">
+                    <div class="ai-scan-ring"></div>
+                    <div class="ai-scan-ring-inner"></div>
+                    <img src="{{ url_for('static', filename='images/liver_logo.jpg') }}" alt="AI Liver Scanning" class="ai-scan-center-img">
+                </div>
+                <h4 class="fw-bold text-primary mb-2"><i class="fas fa-satellite-dish fa-spin me-2"></i>AI Hepatic Diagnostic Scan in Progress</h4>
+                <p class="text-muted" id="scanStepText">Synthesizing patient lab metrics across 10 ML neural models...</p>
+                <div class="progress mx-auto" style="max-width: 350px; height: 8px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- No Selection Message -->
+            <div class="alert alert-info" id="noSelectionMsg">
+                <i class="fas fa-info-circle"></i> Select a patient to generate a prediction
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.metric-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.metric-card.healthy {
+    background: linear-gradient(135deg, #30cfd0 0%, #11998e 100%);
+}
+
+.metric-card.disease {
+    background: linear-gradient(135deg, #fa709a 0%, #f5576c 100%);
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const patientSelect = document.getElementById('patientSelect');
+const modelSelect = document.getElementById('modelSelect');
+const predictBtn = document.getElementById('predictBtn');
+const explainCheck = document.getElementById('explainCheck');
+const resultCard = document.getElementById('resultCard');
+const loadingSpinner = document.getElementById('loadingSpinner');
+const noSelectionMsg = document.getElementById('noSelectionMsg');
+const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+const downloadCsvBtn = document.getElementById('downloadCsvBtn');
+
+patientSelect.addEventListener('change', function() {
+    predictBtn.disabled = !this.value;
+});
+
+predictBtn.addEventListener('click', async function() {
+    const patientId = patientSelect.value;
+    const modelName = modelSelect ? modelSelect.value : null;
+    if (!patientId) return;
+
+    loadingSpinner.style.display = 'block';
+    resultCard.style.display = 'none';
+    noSelectionMsg.style.display = 'none';
+
+    try {
+        const payload = {
+            patient_id: parseInt(patientId),
+            explain: explainCheck.checked
+        };
+        if (modelName) {
+            payload.model_name = modelName;
+        }
+
+        const response = await hepatoxUtils.api.post('/predict', payload);
+
+        displayResults(response);
+        
+        // Update report download URLs
+        if (downloadPdfBtn) {
+            downloadPdfBtn.href = `/predictions/${response.prediction_id}/report/pdf`;
+        }
+        if (downloadCsvBtn) {
+            downloadCsvBtn.href = `/patients/${response.patient_id}/report/csv`;
+        }
+
+        loadingSpinner.style.display = 'none';
+        resultCard.style.display = 'block';
+    } catch (error) {
+        console.error('Prediction error:', error);
+        if (typeof hepatoxUtils !== 'undefined' && hepatoxUtils.showToast) {
+            hepatoxUtils.showToast('Error generating prediction', 'danger');
+        } else {
+            alert('Error generating prediction');
+        }
+        loadingSpinner.style.display = 'none';
+    }
+});
+
+function displayResults(data) {
+    const predictionHtml = `
+        <div class="metric-card ${data.prediction == 1 ? 'disease' : 'healthy'}">
+            <div class="metric-label">Prediction</div>
+            <div class="metric-value">${data.prediction_label}</div>
+            <small>Model: ${data.model_used}</small>
+        </div>
+    `;
+    
+    const metricsHtml = `
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-label">Probability</div>
+                <div class="metric-value">${(data.probability * 100).toFixed(1)}%</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-label">Confidence</div>
+                <div class="metric-value">${(data.confidence_score * 100).toFixed(1)}%</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-label">Risk Level</div>
+                <div class="metric-value">${data.risk_level}</div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('predictionResult').innerHTML = predictionHtml;
+    document.getElementById('metricsContainer').innerHTML = metricsHtml;
+
+    if (data.shap || data.lime) {
+        document.getElementById('explanationsContainer').style.display = 'block';
+        displayExplanations(data);
+    }
+}
+
+function displayExplanations(data) {
+    let xaiContent = '';
+    
+    if (data.shap) {
+        const topFeatures = data.shap.top_features.slice(0, 5);
+        const shaDetails = topFeatures.map(f => `
+            <div class="mb-2">
+                <div class="d-flex justify-content-between">
+                    <span>${f.feature}</span>
+                    <span class="badge bg-primary">${Math.abs(f.contribution).toFixed(4)}</span>
+                </div>
+                <small class="text-muted">Value: ${f.feature_value.toFixed(2)}</small>
+            </div>
+        `).join('');
+        
+        xaiContent += `
+            <div class="tab-pane fade show active" id="shap" role="tabpanel">
+                <h6>Top Features (SHAP)</h6>
+                ${shaDetails}
+            </div>
+        `;
+    }
+    
+    if (data.lime) {
+        const topLime = data.lime.top_features;
+        const limeDetails = topLime.map(f => `
+            <div class="mb-2">
+                <div class="d-flex justify-content-between">
+                    <span>${f.feature_description}</span>
+                    <span class="badge ${f.importance === 'positive' ? 'bg-success' : 'bg-danger'}">
+                        ${f.weight.toFixed(4)}
+                    </span>
+                </div>
+            </div>
+        `).join('');
+        
+        xaiContent += `
+            <div class="tab-pane fade" id="lime" role="tabpanel">
+                <h6>Top Features (LIME)</h6>
+                ${limeDetails}
+                <div class="mt-3">
+                    <strong>Probabilities:</strong>
+                    <ul class="list-unstyled">
+                        <li>Healthy: ${(data.lime.probabilities.healthy * 100).toFixed(2)}%</li>
+                        <li>Disease: ${(data.lime.probabilities.disease * 100).toFixed(2)}%</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+    
+    document.getElementById('xaiContent').innerHTML = xaiContent;
+}
+</script>
+{% endblock %}

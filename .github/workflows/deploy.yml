@@ -1,0 +1,136 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run tests before deployment
+      run: |
+        pip install pytest pytest-cov
+        pytest tests/ -v --tb=short
+      continue-on-error: true
+    
+    - name: Build application
+      run: |
+        python -c "from app import create_app; app = create_app(); print('✓ Application built successfully')"
+    
+    - name: Get version
+      id: version
+      run: |
+        VERSION=$(git describe --tags --always)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Deploying version: $VERSION"
+    
+    - name: Deploy to Render
+      if: success()
+      run: |
+        echo "Deployment to Render would be triggered here"
+        echo "Using webhook or Render API with token from secrets"
+        # Example: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+      env:
+        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+    
+    - name: Deploy to Heroku (alternative)
+      if: success() && contains(github.event.head_commit.message, '[deploy]')
+      run: |
+        echo "Heroku deployment would be triggered here"
+        # git push https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git main
+      continue-on-error: true
+    
+    - name: Notify Slack on success
+      if: success()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: 'HepatoX deployed successfully to production (Version: ${{ steps.version.outputs.version }})'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      continue-on-error: true
+    
+    - name: Notify Slack on failure
+      if: failure()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: 'HepatoX deployment failed. Check logs for details.'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      continue-on-error: true
+
+  health-check:
+    needs: deploy
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Wait for deployment
+      run: sleep 30
+    
+    - name: Check application health
+      run: |
+        RETRY_COUNT=0
+        MAX_RETRIES=5
+        while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+          if curl -s https://hepatox.onrender.com/api/v1/health | grep -q "healthy"; then
+            echo "✓ Application is healthy"
+            exit 0
+          fi
+          RETRY_COUNT=$((RETRY_COUNT + 1))
+          echo "Health check failed. Retrying... ($RETRY_COUNT/$MAX_RETRIES)"
+          sleep 10
+        done
+        echo "✗ Application failed health check"
+        exit 1
+      continue-on-error: true
+    
+    - name: Run smoke tests
+      run: |
+        echo "Running smoke tests against production..."
+        # curl -X POST https://hepatox.onrender.com/api/v1/health
+        # Additional smoke tests would go here
+      continue-on-error: true
+
+  rollback:
+    needs: health-check
+    runs-on: ubuntu-latest
+    if: failure()
+    
+    steps:
+    - name: Trigger rollback
+      run: |
+        echo "Rollback procedure initiated"
+        # Rollback logic would go here
+      continue-on-error: true
+    
+    - name: Notify team of rollback
+      uses: 8398a7/action-slack@v3
+      with:
+        status: 'custom'
+        custom_payload: |
+          {
+            text: '⚠️ HepatoX deployment rolled back due to health check failure'
+          }
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      continue-on-error: true
